@@ -42,6 +42,8 @@ import AnchorEarnTx from "txs/earn/AnchorEarnTx"
 import SignMultisigTxPage from "pages/multisig/SignMultisigTxPage"
 import PostMultisigTxPage from "pages/multisig/PostMultisigTxPage"
 
+import Browser from "pages/browser/Browser"
+
 /* auth */
 import Auth from "auth/modules/Auth"
 import ManageNetworksPage from "auth/networks/ManageNetworksPage"
@@ -101,11 +103,18 @@ export const useNav = () => {
       title: t("Contract"),
       icon: <ContractIcon {...ICON_SIZE} />,
     },
+    {
+      path: "/browser",
+      element: <Browser />,
+      title: t("Browser"),
+      icon: <ContractIcon {...ICON_SIZE} />,
+    },
   ]
 
   const routes = [
     { path: "/", element: <Dashboard /> },
 
+    { path: "/browser", element: <Browser /> },
     /* pages */
     ...menu,
     { path: "/validator/:address", element: <ValidatorDetails /> },

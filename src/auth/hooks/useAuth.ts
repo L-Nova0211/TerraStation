@@ -44,6 +44,7 @@ const useAuth = () => {
 
       storeWallet(wallet)
       setWallet(wallet)
+      // console.log(wallet)
     },
     [setWallet]
   )

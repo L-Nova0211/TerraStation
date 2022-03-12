@@ -100,6 +100,8 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const bankBalance = useBankBalance()
   const { gasPrices } = useTx()
 
+  // console.log(wallet)
+
   /* simulation: estimate gas */
   const simulationTx = estimationTxValues && createTx(estimationTxValues)
   const key = {
