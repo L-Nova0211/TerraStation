@@ -26,33 +26,22 @@ const Browser = () => {
     }
   }, [])
 
-  let wallet = useWallet()
-
   const connect = () => {
-    console.log(wallet)
-    console.log(navigator.userAgent)
-
-    for (var i = 0; i < localStorage.length; i++) {
-      let key = localStorage.key(i)
-      if (key != null) {
-        console.log(key)
-        console.log(localStorage.getItem(key))
-      }
+    // let wallet = useWallet()
+    // wallet.connect(ConnectType.EXTENSION)
+    let electron
+    if (window.electron) {
+      electron = window.electron
+    } else {
+      const { ipcRenderer } = window.require("electron")
+      electron = ipcRenderer
     }
-    console.log("Session")
-    for (var i = 0; i < sessionStorage.length; i++) {
-      let key = sessionStorage.key(i)
-      if (key != null) {
-        console.log(key)
-        console.log(sessionStorage.getItem(key))
-      }
-    }
-
-    wallet.connect(ConnectType.EXTENSION)
+    electron.send("connectWallet")
   }
+
   return (
     <>
-      <button onClick={connect}>Connect</button>
+      {/* <button onClick={connect}>Connect</button> */}
       <webview
         title="anchor"
         // is="x-frame-bypass"

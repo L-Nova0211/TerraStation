@@ -7,13 +7,10 @@ declare global {
 
 const getElectron = () => {
   try {
-    console.log(window.electron)
-
     if (window.electron) {
       return window.electron.sendSync
     } else {
       const { ipcRenderer } = window.require("electron")
-      console.log(ipcRenderer)
       return ipcRenderer.sendSync
     }
   } catch {

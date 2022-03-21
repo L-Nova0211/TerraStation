@@ -13,6 +13,8 @@ import { useAuth } from "auth"
 import SwitchWallet from "auth/modules/select/SwitchWallet"
 import Connected from "./Connected"
 
+// import electron from "../../app/electron"
+
 interface Props {
   renderButton?: (open: () => void) => ReactNode
 }
@@ -34,12 +36,51 @@ const ConnectWallet = ({ renderButton }: Props) => {
     </Button>
   )
 
+  const sendToElectron = (
+    type: ConnectType,
+    identifier: string | undefined
+  ) => {
+    connect(type, identifier)
+
+    let electron
+    if (window.electron) {
+      electron = window.electron
+    } else {
+      const { ipcRenderer } = window.require("electron")
+      electron = ipcRenderer
+    }
+    let res = electron.sendSync("connectWallet")
+    console.log("after")
+    console.log("res")
+  }
+
+  const self_list = []
+  for (let i = 0; i < availableConnections.length; i++) {
+    if (availableConnections[i].type.toLocaleLowerCase() == "extension") {
+      self_list.push({
+        src: availableConnections[i].icon,
+        children: availableConnections[i].name,
+        onClick: () =>
+          sendToElectron(
+            availableConnections[i].type,
+            availableConnections[i].identifier
+          ),
+      })
+    } else {
+      self_list.push({
+        src: availableConnections[i].icon,
+        children: availableConnections[i].name,
+        onClick: () =>
+          connect(
+            availableConnections[i].type,
+            availableConnections[i].identifier
+          ),
+      })
+    }
+  }
+
   const list = [
-    ...availableConnections.map(({ type, identifier, name, icon }) => ({
-      src: icon,
-      children: name,
-      onClick: () => connect(type, identifier),
-    })),
+    ...self_list,
     {
       icon: <UsbIcon />,
       to: "/auth/ledger",
