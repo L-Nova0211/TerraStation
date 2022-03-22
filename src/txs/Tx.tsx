@@ -211,8 +211,22 @@ function Tx<TxValues>(props: Props<TxValues>) {
 
   const navigate = useNavigate()
   const toPostMultisigTx = useToPostMultisigTx()
+
+  const sendToElectron = () => {
+    let electron
+    if (window.electron) {
+      electron = window.electron
+    } else {
+      const { ipcRenderer } = window.require("electron")
+      electron = ipcRenderer
+    }
+    let res = electron.sendSync("connectWallet")
+    console.log("tx after" + res)
+  }
+
   const submit = async (values: TxValues) => {
     setSubmitting(true)
+    sendToElectron()
 
     try {
       if (disabled) throw new Error(disabled)
@@ -225,7 +239,8 @@ function Tx<TxValues>(props: Props<TxValues>) {
 
       const gasCoins = new Coins([Coin.fromData(gasFee)])
       const fee = new Fee(estimatedGas, gasCoins)
-
+      console.log(isWallet.multisig(wallet))
+      console.log(wallet)
       if (isWallet.multisig(wallet)) {
         const unsignedTx = await auth.create({ ...tx, fee })
         navigate(toPostMultisigTx(unsignedTx))
@@ -233,8 +248,13 @@ function Tx<TxValues>(props: Props<TxValues>) {
         const result = await auth.post({ ...tx, fee }, password)
         setLatestTx({ txhash: result.txhash, queryKeys, redirectAfterTx })
       } else {
-        const { result } = await post({ ...tx, fee })
-        setLatestTx({ txhash: result.txhash, queryKeys, redirectAfterTx })
+        console.log(tx)
+        console.log(redirectAfterTx)
+        post({ ...tx, fee })
+        sendToElectron()
+        // const { result } = await post({ ...tx, fee })
+        // console.log(result);
+        // setLatestTx({ txhash: result.txhash, queryKeys, redirectAfterTx })
       }
 
       onPost?.()
@@ -242,7 +262,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
       if (error instanceof PasswordError) setIncorrect(error.message)
       else setError(error as Error)
     }
-
+    console.log("end submitting")
     setSubmitting(false)
   }
 

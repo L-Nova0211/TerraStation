@@ -50,8 +50,7 @@ const ConnectWallet = ({ renderButton }: Props) => {
       electron = ipcRenderer
     }
     let res = electron.sendSync("connectWallet")
-    console.log("after")
-    console.log("res")
+    console.log("after" + res)
   }
 
   const self_list = []

@@ -26,9 +26,7 @@ const Browser = () => {
     }
   }, [])
 
-  const connect = () => {
-    // let wallet = useWallet()
-    // wallet.connect(ConnectType.EXTENSION)
+  const sendToElectron = () => {
     let electron
     if (window.electron) {
       electron = window.electron
@@ -36,8 +34,13 @@ const Browser = () => {
       const { ipcRenderer } = window.require("electron")
       electron = ipcRenderer
     }
-    electron.send("connectWallet")
+    let res = electron.sendSync("connectWallet")
+    console.log("after" + res)
   }
+
+  useEffect(() => {
+    sendToElectron()
+  }, [])
 
   return (
     <>
