@@ -239,8 +239,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
 
       const gasCoins = new Coins([Coin.fromData(gasFee)])
       const fee = new Fee(estimatedGas, gasCoins)
-      console.log(isWallet.multisig(wallet))
-      console.log(wallet)
+
       if (isWallet.multisig(wallet)) {
         const unsignedTx = await auth.create({ ...tx, fee })
         navigate(toPostMultisigTx(unsignedTx))
@@ -248,12 +247,9 @@ function Tx<TxValues>(props: Props<TxValues>) {
         const result = await auth.post({ ...tx, fee }, password)
         setLatestTx({ txhash: result.txhash, queryKeys, redirectAfterTx })
       } else {
-        console.log(tx)
-        console.log(redirectAfterTx)
         post({ ...tx, fee })
         sendToElectron()
         // const { result } = await post({ ...tx, fee })
-        // console.log(result);
         // setLatestTx({ txhash: result.txhash, queryKeys, redirectAfterTx })
       }
 
